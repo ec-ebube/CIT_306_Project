@@ -1,0 +1,49 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  color: #000;
+  padding: 20px;
+}
+
+.timetable-container {
+  text-align: center;
+}
+
+.timetable-container h2,
+.timetable-container h3 {
+  margin: 2px 0;
+}
+
+.timetable-container p {
+  margin: 10px 0 20px;
+  font-weight: bold;
+}
+
+table.timetable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 14px;
+}
+
+table.timetable th,
+table.timetable td {
+  border: 1px solid #000;
+  padding: 8px;
+  height: 40px;
+  vertical-align: middle;
+}
+
+table.timetable th {
+  background: #f5f5f5;
+}
+
+.red {
+  color: red;
+  font-weight: bold;
+}
+
+.green {
+  color: green;
+  font-weight: bold;
+}
