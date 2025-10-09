@@ -3,11 +3,44 @@ document.addEventListener('DOMContentLoaded', function () {
     /* =========================
        Admin Login Form
        ========================= */
-    const loginForm = document.querySelector('.login-form');
+    const loginForm = document.getElementById('loginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', function (e) {
+        loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            alert('Login functionality would be implemented with backend integration.');
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!username || !password) {
+                alert('Please enter both username and password.');
+                return;
+            }
+
+            try {
+                const res = await fetch('http://localhost:3000/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert('✅ Login successful!');
+                    console.log('Response:', data);
+
+                    // Save JWT token for future API calls
+                    localStorage.setItem('adminToken', data.token);
+
+                    // Example redirect (you can change this)
+                    window.location.href = 'admin_dashboard.html';
+                } else {
+                    alert(`❌ Login failed: ${data.message || 'Invalid credentials'}`);
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                alert('⚠️ Unable to connect to backend. Make sure server is running on port 3000.');
+            }
         });
     }
 
@@ -51,37 +84,30 @@ document.addEventListener('DOMContentLoaded', function () {
        ========================= */
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('nav ul');
-    const hamburgerIcon = hamburger.querySelector('i');
+    const hamburgerIcon = hamburger ? hamburger.querySelector('i') : null;
 
     if (hamburger && navMenu) {
         hamburger.addEventListener('click', () => {
             navMenu.classList.toggle('show');
 
-            // Toggle icon (Font Awesome 6)
             if (navMenu.classList.contains('show')) {
-                hamburgerIcon.classList.remove('fa-bars');
-                hamburgerIcon.classList.add('fa-xmark');
+                hamburgerIcon.classList.replace('fa-bars', 'fa-xmark');
             } else {
-                hamburgerIcon.classList.remove('fa-xmark');
-                hamburgerIcon.classList.add('fa-bars');
+                hamburgerIcon.classList.replace('fa-xmark', 'fa-bars');
             }
         });
 
-        // Close menu when a nav link is clicked
         document.querySelectorAll('nav ul li a').forEach(link => {
             link.addEventListener('click', () => {
                 navMenu.classList.remove('show');
-                hamburgerIcon.classList.remove('fa-xmark');
-                hamburgerIcon.classList.add('fa-bars');
+                hamburgerIcon.classList.replace('fa-xmark', 'fa-bars');
             });
         });
 
-        // Optional: close if clicking outside menu
         document.addEventListener('click', (e) => {
             if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
                 navMenu.classList.remove('show');
-                hamburgerIcon.classList.remove('fa-xmark');
-                hamburgerIcon.classList.add('fa-bars');
+                hamburgerIcon.classList.replace('fa-xmark', 'fa-bars');
             }
         });
     }
@@ -89,14 +115,14 @@ document.addEventListener('DOMContentLoaded', function () {
     /* =========================
        Academic Calendar Modal
        ========================= */
-    const calendarModal = document.getElementById('calendar-modal'); // modal container
-    const calendarLink = document.getElementById('academic-calendar-link'); // link in sidebar
-    const closeBtn = document.querySelector('.close-btn'); // X button
+    const calendarModal = document.getElementById('calendar-modal');
+    const calendarLink = document.getElementById('academic-calendar-link');
+    const closeBtn = document.querySelector('.close-btn');
 
     if (calendarLink && calendarModal) {
         calendarLink.addEventListener('click', (e) => {
             e.preventDefault();
-            calendarModal.style.display = 'flex'; // show modal
+            calendarModal.style.display = 'flex';
         });
     }
 
@@ -106,7 +132,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Close modal when clicking outside the box
     window.addEventListener('click', (e) => {
         if (e.target === calendarModal) {
             calendarModal.style.display = 'none';
@@ -114,11 +139,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     /* =========================
-   Class Timetable Modal
-   ========================= */
+       Class Timetable Modal
+       ========================= */
     const timetableModal = document.getElementById('timetable-modal');
     const headerTimetableLink = document.getElementById('header-timetable-link');
-    const footerTimetableLink = document.getElementById('footer-timetable-link'); // new
+    const footerTimetableLink = document.getElementById('footer-timetable-link');
     const timetableClose = document.querySelector('.timetable-close');
 
     function openTimetableModal(e) {
@@ -126,21 +151,14 @@ document.addEventListener('DOMContentLoaded', function () {
         timetableModal.style.display = 'flex';
     }
 
-    if (headerTimetableLink) {
-        headerTimetableLink.addEventListener('click', openTimetableModal);
-    }
-
-    if (footerTimetableLink) {
-        footerTimetableLink.addEventListener('click', openTimetableModal);
-    }
-
+    if (headerTimetableLink) headerTimetableLink.addEventListener('click', openTimetableModal);
+    if (footerTimetableLink) footerTimetableLink.addEventListener('click', openTimetableModal);
     if (timetableClose && timetableModal) {
         timetableClose.addEventListener('click', () => {
             timetableModal.style.display = 'none';
         });
     }
 
-    // Close modal when clicking outside
     window.addEventListener('click', (e) => {
         if (e.target === timetableModal) {
             timetableModal.style.display = 'none';
@@ -150,15 +168,9 @@ document.addEventListener('DOMContentLoaded', function () {
     /* =========================
        Admin Login Modal
        ========================= */
-    const adminLoginBtn = document.querySelector('.search-login .btn'); // header button
     const adminModal = document.getElementById('admin-login-modal');
     const adminClose = document.querySelector('.admin-close');
-
-    if (adminLoginBtn && adminModal) {
-        adminLoginBtn.addEventListener('click', () => {
-            adminModal.style.display = 'flex';
-        });
-    }
+    const mobileAdminLogin = document.getElementById('mobile-admin-login');
 
     if (adminClose && adminModal) {
         adminClose.addEventListener('click', () => {
@@ -166,24 +178,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Close when clicking outside
     window.addEventListener('click', (e) => {
         if (e.target === adminModal) {
             adminModal.style.display = 'none';
         }
     });
 
-
-    const mobileAdminLogin = document.getElementById('mobile-admin-login');
-
     if (mobileAdminLogin && adminModal) {
         mobileAdminLogin.addEventListener('click', (e) => {
             e.preventDefault();
             adminModal.style.display = 'flex';
-            navMenu.classList.remove('show'); // close hamburger menu
-            hamburgerIcon.classList.remove('fa-xmark');
-            hamburgerIcon.classList.add('fa-bars');
+            if (navMenu) navMenu.classList.remove('show');
+            if (hamburgerIcon) hamburgerIcon.classList.replace('fa-xmark', 'fa-bars');
         });
     }
-
 });

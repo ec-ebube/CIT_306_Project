@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SOE Information Board</title>
+    <link rel="icon" type="image/svg+xml" href="./Asset/graduation-cap-solid-full.svg">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./Stylesheet/Style.css">
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>SOE Information Board</h1>
+                </div>
+                <div class="hamburger"><i class="fas fa-bars"></i></div>
+
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#announcements">Announcements</a></li>
+                        <li><a href="#events">Events</a></li>
+                        <li><a href="#" id="header-timetable-link">Timetable</a></li>
+                        <li><a href="#">Resources</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="#" id="logoutBtn" class="logout">Logout</a></li>
+                    </ul>
+                </nav>
+
+                <div class="search-login">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <button class="btn btn-danger" id="logoutButton">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Admin Dashboard</h2>
+                <p>Welcome, Admin. Create announcements or events for Software Engineering students.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Left Content -->
+            <div class="left-content">
+                <!-- Create Announcement Section -->
+                <section class="create-announcement" id="create-announcement">
+                    <h2 class="section-title">Create Announcement</h2>
+                    <form id="announcementForm" class="admin-form">
+                        <input type="text" id="announcementTitle" placeholder="Title" required>
+                        <input type="text" id="announcementAuthor" placeholder="Author (e.g., Dean’s Office)" required>
+                        <textarea id="announcementContent" placeholder="Enter announcement details..." rows="5" required></textarea>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Post Announcement</button>
+                    </form>
+                </section>
+
+                <!-- Create Event Section -->
+                <section class="create-event" id="create-event">
+                    <h2 class="section-title">Create Event</h2>
+                    <form id="eventForm" class="admin-form">
+                        <input type="text" id="eventTitle" placeholder="Event Title" required>
+                        <input type="date" id="eventDate" required>
+                        <input type="time" id="eventStartTime" required>
+                        <input type="time" id="eventEndTime" required>
+                        <input type="text" id="eventLocation" placeholder="Location" required>
+                        <textarea id="eventDetails" placeholder="Event details..." rows="5" required></textarea>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Post Event</button>
+                    </form>
+                </section>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="upcoming-deadlines">
+                    <h3>Admin Actions</h3>
+                    <ul class="links-list">
+                        <li><a href="#create-announcement"><i class="fas fa-bullhorn"></i> Create Announcement</a></li>
+                        <li><a href="#create-event"><i class="fas fa-calendar-plus"></i> Create Event</a></li>
+                        <li><a href="index.html"><i class="fas fa-home"></i> View Main Site</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About</h3>
+                    <p>Manage and publish updates, announcements, and events for Software Engineering students.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="index.html">Home</a>
+                    <a href="#create-announcement">Create Announcement</a>
+                    <a href="#create-event">Create Event</a>
+                </div>
+
+                <div class="footer-section" id="contact">
+                    <h3>Contact Support</h3>
+                    <p><i class="fas fa-envelope"></i> support@soe-admin.edu.ng</p>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; 2025 SOE Admin Dashboard. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="JS/Admin_Script.js">
+
+    </script>
+</body>
+
+</html>
