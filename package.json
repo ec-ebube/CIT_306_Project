@@ -2,9 +2,10 @@
   "name": "cit306_project",
   "version": "1.0.0",
   "description": "",
-  "main": "Home.html",
+  "main": "Server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+     "start": "node Server.js"
   },
   "repository": {
     "type": "git",
@@ -15,7 +16,7 @@
     "Site"
   ],
   "author": "SOE DEPARTMENT",
-  "license": "ISC",
+  "license": "SOE",
   "bugs": {
     "url": "https://github.com/ec-ebube/CIT_306_Project/issues"
   },
