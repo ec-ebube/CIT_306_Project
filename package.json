@@ -1,0 +1,23 @@
+{
+  "name": "cit306_project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Home.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ec-ebube/CIT_306_Project.git"
+  },
+  "keywords": [
+    "Departmental",
+    "Site"
+  ],
+  "author": "SOE DEPARTMENT",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ec-ebube/CIT_306_Project/issues"
+  },
+  "homepage": "https://github.com/ec-ebube/CIT_306_Project#readme"
+}
