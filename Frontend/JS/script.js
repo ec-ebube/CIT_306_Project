@@ -57,12 +57,30 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* =========================
-       Admin Button Scroll
+       Modal Elements - Declare ONCE at the top
+       ========================= */
+    const adminModal = document.getElementById('admin-login-modal');
+    const adminClose = document.querySelector('.admin-close');
+    const calendarModal = document.getElementById('calendar-modal');
+    const timetableModal = document.getElementById('timetable-modal');
+    const closeBtn = document.querySelector('.close-btn');
+    const timetableClose = document.querySelector('.timetable-close');
+
+    /* =========================
+       Admin Login (Desktop)
        ========================= */
     const adminBtn = document.querySelector('.search-login .btn');
-    if (adminBtn) {
-        adminBtn.addEventListener('click', function () {
-            document.querySelector('.admin-login').scrollIntoView({ behavior: 'smooth' });
+    
+    if (adminBtn && adminModal) {
+        adminBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            adminModal.style.display = 'flex';
+        });
+    }
+
+    if (adminClose && adminModal) {
+        adminClose.addEventListener('click', () => {
+            adminModal.style.display = 'none';
         });
     }
 
@@ -100,14 +118,18 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('nav ul li a').forEach(link => {
             link.addEventListener('click', () => {
                 navMenu.classList.remove('show');
-                hamburgerIcon.classList.replace('fa-xmark', 'fa-bars');
+                if (hamburgerIcon) {
+                    hamburgerIcon.classList.replace('fa-xmark', 'fa-bars');
+                }
             });
         });
 
         document.addEventListener('click', (e) => {
             if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
                 navMenu.classList.remove('show');
-                hamburgerIcon.classList.replace('fa-xmark', 'fa-bars');
+                if (hamburgerIcon) {
+                    hamburgerIcon.classList.replace('fa-xmark', 'fa-bars');
+                }
             }
         });
     }
@@ -115,9 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
     /* =========================
        Academic Calendar Modal
        ========================= */
-    const calendarModal = document.getElementById('calendar-modal');
     const calendarLink = document.getElementById('academic-calendar-link');
-    const closeBtn = document.querySelector('.close-btn');
 
     if (calendarLink && calendarModal) {
         calendarLink.addEventListener('click', (e) => {
@@ -132,57 +152,32 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    window.addEventListener('click', (e) => {
-        if (e.target === calendarModal) {
-            calendarModal.style.display = 'none';
-        }
-    });
-
     /* =========================
        Class Timetable Modal
        ========================= */
-    const timetableModal = document.getElementById('timetable-modal');
     const headerTimetableLink = document.getElementById('header-timetable-link');
     const footerTimetableLink = document.getElementById('footer-timetable-link');
-    const timetableClose = document.querySelector('.timetable-close');
 
     function openTimetableModal(e) {
         e.preventDefault();
-        timetableModal.style.display = 'flex';
+        if (timetableModal) {
+            timetableModal.style.display = 'flex';
+        }
     }
 
     if (headerTimetableLink) headerTimetableLink.addEventListener('click', openTimetableModal);
     if (footerTimetableLink) footerTimetableLink.addEventListener('click', openTimetableModal);
+    
     if (timetableClose && timetableModal) {
         timetableClose.addEventListener('click', () => {
             timetableModal.style.display = 'none';
         });
     }
 
-    window.addEventListener('click', (e) => {
-        if (e.target === timetableModal) {
-            timetableModal.style.display = 'none';
-        }
-    });
-
     /* =========================
-       Admin Login Modal
+       Mobile Admin Login
        ========================= */
-    const adminModal = document.getElementById('admin-login-modal');
-    const adminClose = document.querySelector('.admin-close');
     const mobileAdminLogin = document.getElementById('mobile-admin-login');
-
-    if (adminClose && adminModal) {
-        adminClose.addEventListener('click', () => {
-            adminModal.style.display = 'none';
-        });
-    }
-
-    window.addEventListener('click', (e) => {
-        if (e.target === adminModal) {
-            adminModal.style.display = 'none';
-        }
-    });
 
     if (mobileAdminLogin && adminModal) {
         mobileAdminLogin.addEventListener('click', (e) => {
@@ -192,4 +187,19 @@ document.addEventListener('DOMContentLoaded', function () {
             if (hamburgerIcon) hamburgerIcon.classList.replace('fa-xmark', 'fa-bars');
         });
     }
+
+    /* =========================
+       Global Modal Close - Handle clicks outside modals
+       ========================= */
+    window.addEventListener('click', (e) => {
+        if (adminModal && e.target === adminModal) {
+            adminModal.style.display = 'none';
+        }
+        if (calendarModal && e.target === calendarModal) {
+            calendarModal.style.display = 'none';
+        }
+        if (timetableModal && e.target === timetableModal) {
+            timetableModal.style.display = 'none';
+        }
+    });
 });
