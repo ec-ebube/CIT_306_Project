@@ -1,5 +1,145 @@
 // Wait until DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
+    // =========================
+    // Fetch Data from API
+    // =========================
+    async function loadAnnouncements() {
+        try {
+            const response = await fetch('http://localhost:3000/api/announcements');
+            const announcements = await response.json();
+            
+            if (response.ok) {
+                displayAnnouncements(announcements);
+            } else {
+                console.error('Failed to load announcements:', announcements.message);
+            }
+        } catch (error) {
+            console.error('Error loading announcements:', error);
+            // Keep default announcements if API fails
+        }
+    }
+
+    async function loadEvents() {
+        try {
+            const response = await fetch('http://localhost:3000/api/events');
+            const events = await response.json();
+            
+            if (response.ok) {
+                displayEvents(events);
+            } else {
+                console.error('Failed to load events:', events.message);
+            }
+        } catch (error) {
+            console.error('Error loading events:', error);
+            // Keep default events if API fails
+        }
+    }
+
+    // =========================
+    // Display Data Functions
+    // =========================
+    function displayAnnouncements(announcements) {
+        const announcementsContainer = document.getElementById('announcements');
+        if (!announcementsContainer) return;
+
+        // Find the container where announcements should be inserted
+        const announcementsList = announcementsContainer.querySelector('.announcements-list') || announcementsContainer;
+        
+        // Clear existing content except the title
+        const title = announcementsContainer.querySelector('.section-title');
+        announcementsContainer.innerHTML = '';
+        if (title) announcementsContainer.appendChild(title);
+
+        if (announcements.length === 0) {
+            announcementsContainer.innerHTML += `
+                <div class="announcement-item">
+                    <p class="announcement-content">No announcements available.</p>
+                </div>
+            `;
+            return;
+        }
+
+        announcements.forEach(announcement => {
+            const announcementDate = new Date(announcement.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            const announcementHTML = `
+                <div class="announcement-item">
+                    <h3 class="announcement-title">${announcement.title}</h3>
+                    <div class="announcement-meta">
+                        <span><i class="far fa-calendar"></i> ${announcementDate}</span>
+                        <span><i class="far fa-user"></i> ${announcement.author}</span>
+                    </div>
+                    <p class="announcement-content">${announcement.content}</p>
+                    <a href="#" class="read-more">Read more <i class="fas fa-arrow-right"></i></a>
+                </div>
+            `;
+            
+            announcementsContainer.innerHTML += announcementHTML;
+        });
+    }
+
+    function displayEvents(events) {
+        const eventsContainer = document.getElementById('events');
+        if (!eventsContainer) return;
+
+        // Find the container where events should be inserted
+        const eventsList = eventsContainer.querySelector('.events-list') || eventsContainer;
+        
+        // Clear existing content except the title
+        const title = eventsContainer.querySelector('.section-title');
+        eventsContainer.innerHTML = '';
+        if (title) eventsContainer.appendChild(title);
+
+        if (events.length === 0) {
+            eventsContainer.innerHTML += `
+                <div class="event-item">
+                    <p class="event-time">No upcoming events.</p>
+                </div>
+            `;
+            return;
+        }
+
+        events.forEach(event => {
+            const eventDate = new Date(event.date);
+            const eventDay = eventDate.getDate();
+            const eventMonth = eventDate.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+            
+            const eventTime = event.time || 'Time TBA';
+            const eventLocation = event.location || 'Location TBA';
+
+            const eventHTML = `
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-day">${eventDay}</div>
+                        <div class="event-month">${eventMonth}</div>
+                    </div>
+                    <div class="event-details">
+                        <h3 class="event-title">${event.title}</h3>
+                        <p class="event-time"><i class="far fa-clock"></i> ${eventTime} | ${eventLocation}</p>
+                        ${event.description ? `<p class="event-description">${event.description}</p>` : ''}
+                        ${event.googleCalendarLink ? `
+                            <a class="add-to-calendar" href="${event.googleCalendarLink}" target="_blank">
+                                <i class="fas fa-calendar-plus"></i> Add to Google Calendar
+                            </a>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            eventsContainer.innerHTML += eventHTML;
+        });
+    }
+
+    // =========================
+    // Load data on page load
+    // =========================
+    loadAnnouncements();
+    loadEvents();
+
     /* =========================
        Admin Login Form
        ========================= */
@@ -32,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Save JWT token for future API calls
                     localStorage.setItem('adminToken', data.token);
 
-                    // Example redirect (you can change this)
+                    // Redirect to admin dashboard
                     window.location.href = 'admin_dashboard.html';
                 } else {
                     alert(`❌ Login failed: ${data.message || 'Invalid credentials'}`);

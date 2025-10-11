@@ -2,26 +2,36 @@
    ADMIN DASHBOARD SCRIPT
    ========================= */
 
+const API_BASE_URL = 'http://localhost:3000';
+
 document.addEventListener("DOMContentLoaded", () => {
+    console.log('Admin Dashboard - Initializing...');
+
+    // Check if user is logged in
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+        alert("Please log in first");
+        window.location.replace("Home.html");
+        return;
+    }
+
     // ====================
     // Logout functionality
     // ====================
-    const logoutButton = document.getElementById("logoutButton") || document.getElementById("logoutBtn");
-    if (logoutButton) {
-        logoutButton.addEventListener("click", (e) => {
+    const logoutButtons = document.querySelectorAll("#logoutButton");
+    logoutButtons.forEach(button => {
+        button.addEventListener("click", (e) => {
             e.preventDefault();
 
             // Clear all storage
             localStorage.removeItem("adminToken");
             localStorage.removeItem("token");
-            localStorage.removeItem("user");
             sessionStorage.removeItem("token");
-            sessionStorage.removeItem("user");
 
-            // Instant redirect to home.html
-            window.location.replace("../home.html");
+            // Redirect to home page
+            window.location.replace("Home.html");
         });
-    }
+    });
 
     // ====================
     // Announcement Form
@@ -33,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const token = localStorage.getItem("adminToken");
             if (!token) {
-                window.location.replace("../home.html");
+                window.location.replace("Home.html");
                 return;
             }
 
@@ -41,14 +51,25 @@ document.addEventListener("DOMContentLoaded", () => {
             const author = document.getElementById("announcementAuthor").value.trim();
             const content = document.getElementById("announcementContent").value.trim();
 
+            if (!title || !author || !content) {
+                alert("Please fill in all fields");
+                return;
+            }
+
             try {
-                const res = await fetch("http://localhost:3000/api/admin/announcements", {
+                console.log("Posting announcement...");
+                const res = await fetch(`${API_BASE_URL}/api/announcements`, { // ✅ FIXED ENDPOINT
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
                     },
-                    body: JSON.stringify({ title, author, content })
+                    body: JSON.stringify({ 
+                        title, 
+                        content, 
+                        author, 
+                        category: 'general' 
+                    })
                 });
 
                 const data = await res.json();
@@ -56,11 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     alert("✅ Announcement posted successfully!");
                     announcementForm.reset();
                 } else {
-                    alert(`❌ Failed: ${data.message}`);
+                    alert(`❌ Failed: ${data.message || 'Server error'}`);
                 }
             } catch (err) {
+                console.error("Announcement error:", err);
                 alert("⚠️ Unable to reach the backend. Check server connection.");
-                console.error(err);
             }
         });
     }
@@ -75,27 +96,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const token = localStorage.getItem("adminToken");
             if (!token) {
-                window.location.replace("../home.html");
+                window.location.replace("Home.html");
                 return;
             }
 
-            const eventData = {
-                title: document.getElementById("eventTitle").value.trim(),
-                date: document.getElementById("eventDate").value,
-                startTime: document.getElementById("eventStartTime").value,
-                endTime: document.getElementById("eventEndTime").value,
-                location: document.getElementById("eventLocation").value.trim(),
-                details: document.getElementById("eventDetails").value.trim(),
-            };
+            const title = document.getElementById("eventTitle").value.trim();
+            const date = document.getElementById("eventDate").value;
+            const startTime = document.getElementById("eventStartTime").value;
+            const endTime = document.getElementById("eventEndTime").value;
+            const location = document.getElementById("eventLocation").value.trim();
+            const description = document.getElementById("eventDetails").value.trim();
+
+            if (!title || !date || !location || !description) {
+                alert("Please fill in all required fields");
+                return;
+            }
+
+            // Format time properly
+            const time = `${startTime} - ${endTime}`;
 
             try {
-                const res = await fetch("http://localhost:3000/api/admin/events", {
+                console.log("Posting event...");
+                const res = await fetch(`${API_BASE_URL}/api/events`, { // ✅ FIXED ENDPOINT
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
                     },
-                    body: JSON.stringify(eventData)
+                    body: JSON.stringify({ 
+                        title,
+                        description,
+                        date: new Date(date),
+                        time,
+                        location
+                    })
                 });
 
                 const data = await res.json();
@@ -103,11 +137,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     alert("✅ Event posted successfully!");
                     eventForm.reset();
                 } else {
-                    alert(`❌ Failed: ${data.message}`);
+                    alert(`❌ Failed: ${data.message || 'Server error'}`);
                 }
             } catch (err) {
+                console.error("Event error:", err);
                 alert("⚠️ Unable to reach the backend. Check server connection.");
-                console.error(err);
             }
         });
     }
@@ -139,4 +173,20 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
+
+    // Test server connection on load
+    testServerConnection();
 });
+
+async function testServerConnection() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/announcements`);
+        if (response.ok) {
+            console.log("✅ Server connection successful");
+        } else {
+            console.warn("⚠️ Server responded with error:", response.status);
+        }
+    } catch (error) {
+        console.error("❌ Server connection failed:", error);
+    }
+}
