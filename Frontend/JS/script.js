@@ -12,10 +12,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 displayAnnouncements(announcements);
             } else {
                 console.error('Failed to load announcements:', announcements.message);
+                showDefaultAnnouncements();
             }
         } catch (error) {
             console.error('Error loading announcements:', error);
-            // Keep default announcements if API fails
+            showDefaultAnnouncements();
         }
     }
 
@@ -28,10 +29,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 displayEvents(events);
             } else {
                 console.error('Failed to load events:', events.message);
+                showDefaultEvents();
             }
         } catch (error) {
             console.error('Error loading events:', error);
-            // Keep default events if API fails
+            showDefaultEvents();
         }
     }
 
@@ -42,18 +44,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const announcementsContainer = document.getElementById('announcements');
         if (!announcementsContainer) return;
 
-        // Find the container where announcements should be inserted
-        const announcementsList = announcementsContainer.querySelector('.announcements-list') || announcementsContainer;
-        
         // Clear existing content except the title
         const title = announcementsContainer.querySelector('.section-title');
         announcementsContainer.innerHTML = '';
         if (title) announcementsContainer.appendChild(title);
 
-        if (announcements.length === 0) {
+        if (!announcements || announcements.length === 0) {
             announcementsContainer.innerHTML += `
                 <div class="announcement-item">
-                    <p class="announcement-content">No announcements available.</p>
+                    <p class="announcement-content">No announcements available at the moment.</p>
                 </div>
             `;
             return;
@@ -86,22 +85,22 @@ document.addEventListener('DOMContentLoaded', function () {
         const eventsContainer = document.getElementById('events');
         if (!eventsContainer) return;
 
-        // Find the container where events should be inserted
-        const eventsList = eventsContainer.querySelector('.events-list') || eventsContainer;
-        
         // Clear existing content except the title
         const title = eventsContainer.querySelector('.section-title');
         eventsContainer.innerHTML = '';
         if (title) eventsContainer.appendChild(title);
 
-        if (events.length === 0) {
+        if (!events || events.length === 0) {
             eventsContainer.innerHTML += `
                 <div class="event-item">
-                    <p class="event-time">No upcoming events.</p>
+                    <p class="event-time">No upcoming events scheduled.</p>
                 </div>
             `;
             return;
         }
+
+        // Sort events by date (closest first)
+        events.sort((a, b) => new Date(a.date) - new Date(b.date));
 
         events.forEach(event => {
             const eventDate = new Date(event.date);
@@ -134,25 +133,58 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function showDefaultAnnouncements() {
+        const announcementsContainer = document.getElementById('announcements');
+        if (!announcementsContainer) return;
+
+        const title = announcementsContainer.querySelector('.section-title');
+        announcementsContainer.innerHTML = '';
+        if (title) announcementsContainer.appendChild(title);
+
+        announcementsContainer.innerHTML += `
+            <div class="announcement-item">
+                <p class="announcement-content">Unable to load announcements. Please check your connection.</p>
+            </div>
+        `;
+    }
+
+    function showDefaultEvents() {
+        const eventsContainer = document.getElementById('events');
+        if (!eventsContainer) return;
+
+        const title = eventsContainer.querySelector('.section-title');
+        eventsContainer.innerHTML = '';
+        if (title) eventsContainer.appendChild(title);
+
+        eventsContainer.innerHTML += `
+            <div class="event-item">
+                <p class="event-time">Unable to load events. Please check your connection.</p>
+            </div>
+        `;
+    }
+
     // =========================
     // Load data on page load
     // =========================
     loadAnnouncements();
     loadEvents();
 
-    /* =========================
-       Admin Login Form
-       ========================= */
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', async function (e) {
+    // =========================
+    // Admin Login Functionality
+    // =========================
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    if (adminLoginForm) {
+        adminLoginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+            const loginMessage = document.getElementById('loginMessage');
 
             if (!username || !password) {
-                alert('Please enter both username and password.');
+                if (loginMessage) {
+                    loginMessage.textContent = 'Please enter both username and password.';
+                }
                 return;
             }
 
@@ -166,20 +198,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await res.json();
 
                 if (res.ok) {
-                    alert('✅ Login successful!');
-                    console.log('Response:', data);
+                    if (loginMessage) {
+                        loginMessage.textContent = '✅ Login successful! Redirecting...';
+                        loginMessage.style.color = 'green';
+                    }
 
                     // Save JWT token for future API calls
                     localStorage.setItem('adminToken', data.token);
 
-                    // Redirect to admin dashboard
-                    window.location.href = 'admin_dashboard.html';
+                    // Redirect to admin dashboard after short delay
+                    setTimeout(() => {
+                        window.location.href = 'admin_dashboard.html';
+                    }, 1000);
                 } else {
-                    alert(`❌ Login failed: ${data.message || 'Invalid credentials'}`);
+                    if (loginMessage) {
+                        loginMessage.textContent = `❌ ${data.message || 'Invalid credentials'}`;
+                        loginMessage.style.color = 'red';
+                    }
                 }
             } catch (err) {
                 console.error('Error:', err);
-                alert('⚠️ Unable to connect to backend. Make sure server is running on port 3000.');
+                if (loginMessage) {
+                    loginMessage.textContent = '⚠️ Unable to connect to server. Please try again.';
+                    loginMessage.style.color = 'red';
+                }
             }
         });
     }
@@ -197,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* =========================
-       Modal Elements - Declare ONCE at the top
+       Modal Elements
        ========================= */
     const adminModal = document.getElementById('admin-login-modal');
     const adminClose = document.querySelector('.admin-close');
@@ -207,12 +249,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const timetableClose = document.querySelector('.timetable-close');
 
     /* =========================
-       Admin Login (Desktop)
+       Admin Login Triggers
        ========================= */
-    const adminBtn = document.querySelector('.search-login .btn');
-    
-    if (adminBtn && adminModal) {
-        adminBtn.addEventListener('click', (e) => {
+    const desktopAdminLogin = document.getElementById('desktop-admin-login');
+    const mobileAdminLogin = document.getElementById('mobile-admin-login');
+
+    if (desktopAdminLogin && adminModal) {
+        desktopAdminLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            adminModal.style.display = 'flex';
+        });
+    }
+
+    if (mobileAdminLogin && adminModal) {
+        mobileAdminLogin.addEventListener('click', (e) => {
             e.preventDefault();
             adminModal.style.display = 'flex';
         });
@@ -311,20 +361,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (timetableClose && timetableModal) {
         timetableClose.addEventListener('click', () => {
             timetableModal.style.display = 'none';
-        });
-    }
-
-    /* =========================
-       Mobile Admin Login
-       ========================= */
-    const mobileAdminLogin = document.getElementById('mobile-admin-login');
-
-    if (mobileAdminLogin && adminModal) {
-        mobileAdminLogin.addEventListener('click', (e) => {
-            e.preventDefault();
-            adminModal.style.display = 'flex';
-            if (navMenu) navMenu.classList.remove('show');
-            if (hamburgerIcon) hamburgerIcon.classList.replace('fa-xmark', 'fa-bars');
         });
     }
 

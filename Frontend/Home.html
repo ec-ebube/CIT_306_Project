@@ -42,7 +42,7 @@
                         <i class="fas fa-search"></i>
                         <input type="text" placeholder="Search...">
                     </div>
-                    <button class="btn btn-primary" id="desktop-admin-login">Admin Login</button>
+                    <button class="btn btn-primary" id="desktop-admin-login" >Admin Login</button>
                 </div>
             </div>
         </div>
@@ -207,7 +207,6 @@
 
 
 
-
                 <!-- Upcoming Deadlines -->
                 <div class="upcoming-deadlines">
                     <h3>Upcoming Deadlines</h3>
@@ -278,21 +277,21 @@
     </footer>
 
     <!-- Admin Login Modal -->
-    <!-- <div id="admin-login-modal" class="calendar-modal">
+    <div id="admin-login-modal" class="calendar-modal">
         <div class="calendar-content">
             <span class="close-btn admin-close">&times;</span>
             <h3>Admin Login</h3>
-            <form class="login-form" id="loginForm">
-                <input type="text" id="username" placeholder="Username" required>
-                <input type="password" id="password" placeholder="Password" required>
+            <form class="login-form" id="adminLoginForm">
+                <input type="text" id="adminUsername" placeholder="Username" required>
+                <input type="password" id="adminPassword" placeholder="Password" required>
+                <div id="loginMessage"></div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
             </form>
-
         </div>
-    </div> -->
+    </div>
 
-    <!-- Desktop Admin Login -->
-    <div class="search-login">
+    <!-- Remove these duplicate sections that were at the bottom -->
+    <!-- <div class="search-login">
         <div class="search-box">
             <i class="fas fa-search"></i>
             <input type="text" placeholder="Search..." />
@@ -300,12 +299,9 @@
         <button class="btn btn-primary admin-login-trigger">Admin Login</button>
     </div>
 
-    <!-- Mobile Admin Login -->
     <li class="mobile-admin-login">
         <a href="#" class="admin-login-trigger">Admin Login</a>
-    </li>
-
-
+    </li> -->
 
     <script src="./JS/script.js"></script>
 </body>
