@@ -119,11 +119,10 @@
                         <div class="event-details">
                             <h3 class="event-title">Guest Lecture: AI in Modern Web Development</h3>
                             <p class="event-time"><i class="far fa-clock"></i> 2:00 PM - 4:00 PM | Lecture Hall A</p>
-
+                            <p class="event-description">Join industry expert John Smith as he discusses the latest AI technologies transforming web development practices.</p>
+                            
                             <!-- Add to Google Calendar -->
-                            <a class="add-to-calendar"
-                                href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Guest+Lecture:+AI+in+Modern+Web+Development&dates=20251020T140000Z/20251020T160000Z&details=Join+us+for+a+guest+lecture+on+AI+in+Modern+Web+Development&location=Lecture+Hall+A"
-                                target="_blank">
+                            <a class="add-to-calendar" href="#" onclick="addToCalendar('Guest Lecture: AI in Modern Web Development', 'Join industry expert John Smith as he discusses the latest AI technologies transforming web development practices.', 'Lecture Hall A', '2024-10-20', '14:00', '16:00')">
                                 <i class="fas fa-calendar-plus"></i> Add to Google Calendar
                             </a>
                         </div>
@@ -137,11 +136,10 @@
                         <div class="event-details">
                             <h3 class="event-title">Career Development Workshop</h3>
                             <p class="event-time"><i class="far fa-clock"></i> 10:00 AM - 12:00 PM | Seminar Room B</p>
-
+                            <p class="event-description">Interactive workshop focusing on resume building, interview skills, and career planning for software engineering students.</p>
+                            
                             <!-- Add to Google Calendar -->
-                            <a class="add-to-calendar"
-                                href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Career+Development+Workshop&dates=20251025T100000Z/20251025T120000Z&details=Interactive+career+workshop+for+students&location=Seminar+Room+B"
-                                target="_blank">
+                            <a class="add-to-calendar" href="#" onclick="addToCalendar('Career Development Workshop', 'Interactive workshop focusing on resume building, interview skills, and career planning for software engineering students.', 'Seminar Room B', '2024-10-25', '10:00', '12:00')">
                                 <i class="fas fa-calendar-plus"></i> Add to Google Calendar
                             </a>
                         </div>
@@ -154,13 +152,45 @@
                         </div>
                         <div class="event-details">
                             <h3 class="event-title">Departmental Sports Day</h3>
-                            <p class="event-time"><i class="far fa-clock"></i> 9:00 AM - 5:00 PM | University Stadium
-                            </p>
-
+                            <p class="event-time"><i class="far fa-clock"></i> 9:00 AM - 5:00 PM | University Stadium</p>
+                            <p class="event-description">Annual departmental sports competition featuring various athletic events and team-building activities.</p>
+                            
                             <!-- Add to Google Calendar -->
-                            <a class="add-to-calendar"
-                                href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Departmental+Sports+Day&dates=20251028T090000Z/20251028T170000Z&details=Annual+departmental+sports+day&location=University+Stadium"
-                                target="_blank">
+                            <a class="add-to-calendar" href="#" onclick="addToCalendar('Departmental Sports Day', 'Annual departmental sports competition featuring various athletic events and team-building activities.', 'University Stadium', '2024-10-28', '09:00', '17:00')">
+                                <i class="fas fa-calendar-plus"></i> Add to Google Calendar
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="event-item">
+                        <div class="event-date">
+                            <div class="event-day">05</div>
+                            <div class="event-month">NOV</div>
+                        </div>
+                        <div class="event-details">
+                            <h3 class="event-title">Software Engineering Project Fair</h3>
+                            <p class="event-time"><i class="far fa-clock"></i> 1:00 PM - 4:00 PM | Engineering Building</p>
+                            <p class="event-description">Showcase of final year projects from software engineering students. Open to all students and faculty members.</p>
+                            
+                            <!-- Add to Google Calendar -->
+                            <a class="add-to-calendar" href="#" onclick="addToCalendar('Software Engineering Project Fair', 'Showcase of final year projects from software engineering students. Open to all students and faculty members.', 'Engineering Building', '2024-11-05', '13:00', '16:00')">
+                                <i class="fas fa-calendar-plus"></i> Add to Google Calendar
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="event-item">
+                        <div class="event-date">
+                            <div class="event-day">15</div>
+                            <div class="event-month">NOV</div>
+                        </div>
+                        <div class="event-details">
+                            <h3 class="event-title">Industry Networking Session</h3>
+                            <p class="event-time"><i class="far fa-clock"></i> 3:00 PM - 6:00 PM | Career Center</p>
+                            <p class="event-description">Connect with industry professionals from leading tech companies. Bring your resume and portfolio.</p>
+                            
+                            <!-- Add to Google Calendar -->
+                            <a class="add-to-calendar" href="#" onclick="addToCalendar('Industry Networking Session', 'Connect with industry professionals from leading tech companies. Bring your resume and portfolio.', 'Career Center', '2024-11-15', '15:00', '18:00')">
                                 <i class="fas fa-calendar-plus"></i> Add to Google Calendar
                             </a>
                         </div>
@@ -290,18 +320,74 @@
         </div>
     </div>
 
-    <!-- Remove these duplicate sections that were at the bottom -->
-    <!-- <div class="search-login">
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Search..." />
-        </div>
-        <button class="btn btn-primary admin-login-trigger">Admin Login</button>
-    </div>
+    <script>
+        // Google Calendar Integration Function
+        function addToCalendar(title, description, location, date, startTime, endTime) {
+            // Format date to YYYYMMDD
+            const formattedDate = date.replace(/-/g, '');
+            
+            // Convert time to 24-hour format for Google Calendar
+            function formatTime(time) {
+                const [hours, minutes] = time.split(':');
+                let hour = parseInt(hours);
+                const ampm = time.includes('PM') && hour < 12 ? hour + 12 : hour;
+                return ampm.toString().padStart(2, '0') + minutes;
+            }
+            
+            const start = formattedDate + 'T' + formatTime(startTime) + '00';
+            const end = formattedDate + 'T' + formatTime(endTime) + '00';
+            
+            // Create Google Calendar URL
+            const baseUrl = 'https://calendar.google.com/calendar/render';
+            const params = new URLSearchParams({
+                'action': 'TEMPLATE',
+                'text': title,
+                'details': description,
+                'location': location,
+                'dates': `${start}/${end}`
+            });
+            
+            const calendarUrl = `${baseUrl}?${params.toString()}`;
+            
+            // Open Google Calendar in new tab
+            window.open(calendarUrl, '_blank');
+            
+            return false;
+        }
 
-    <li class="mobile-admin-login">
-        <a href="#" class="admin-login-trigger">Admin Login</a>
-    </li> -->
+        // Alternative method for direct .ics file download
+        function downloadICS(title, description, location, date, startTime, endTime) {
+            const start = new Date(`${date}T${startTime}`);
+            const end = new Date(`${date}T${endTime}`);
+            
+            const icsContent = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'BEGIN:VEVENT',
+                `SUMMARY:${title}`,
+                `DESCRIPTION:${description}`,
+                `LOCATION:${location}`,
+                `DTSTART:${formatDateForICS(start)}`,
+                `DTEND:${formatDateForICS(end)}`,
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\n');
+            
+            const blob = new Blob([icsContent], { type: 'text/calendar' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.replace(/\s+/g, '_')}.ics`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function formatDateForICS(date) {
+            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        }
+    </script>
 
     <script src="./JS/script.js"></script>
 </body>

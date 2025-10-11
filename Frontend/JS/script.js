@@ -1,3 +1,56 @@
+// Google Calendar Integration Function
+function generateGoogleCalendarLink(event) {
+    // Format date to YYYYMMDD
+    const eventDate = new Date(event.date);
+    const formattedDate = eventDate.toISOString().slice(0, 10).replace(/-/g, '');
+    
+    // Convert time to 24-hour format for Google Calendar
+    function formatTime(timeString) {
+        if (!timeString || timeString === 'Time TBA') {
+            return { start: '000000', end: '010000' }; // Default 1-hour duration
+        }
+        
+        try {
+            const timePart = timeString.split(' - ')[0]; // Get start time
+            const [timeValue, period] = timePart.split(' ');
+            let [hours, minutes] = timeValue.split(':');
+            
+            hours = parseInt(hours);
+            minutes = minutes || '00';
+            
+            // Convert to 24-hour format
+            if (period === 'PM' && hours < 12) hours += 12;
+            if (period === 'AM' && hours === 12) hours = 0;
+            
+            const startTime = hours.toString().padStart(2, '0') + minutes + '00';
+            
+            // Assume 2-hour duration if no end time specified
+            const endHours = (hours + 2) % 24;
+            const endTime = endHours.toString().padStart(2, '0') + minutes + '00';
+            
+            return { start: startTime, end: endTime };
+        } catch (error) {
+            return { start: '000000', end: '020000' }; // Default 2-hour duration
+        }
+    }
+    
+    const times = formatTime(event.time);
+    const start = formattedDate + 'T' + times.start;
+    const end = formattedDate + 'T' + times.end;
+    
+    // Create Google Calendar URL
+    const baseUrl = 'https://calendar.google.com/calendar/render';
+    const params = new URLSearchParams({
+        'action': 'TEMPLATE',
+        'text': event.title,
+        'details': event.description || 'Event from SOE Information Board',
+        'location': event.location || 'Location TBA',
+        'dates': `${start}/${end}`
+    });
+    
+    return `${baseUrl}?${params.toString()}`;
+}
+
 // Wait until DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
     // =========================
@@ -110,6 +163,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const eventTime = event.time || 'Time TBA';
             const eventLocation = event.location || 'Location TBA';
 
+            // Generate Google Calendar link for every event
+            const googleCalendarLink = generateGoogleCalendarLink(event);
+
             const eventHTML = `
                 <div class="event-item">
                     <div class="event-date">
@@ -120,11 +176,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         <h3 class="event-title">${event.title}</h3>
                         <p class="event-time"><i class="far fa-clock"></i> ${eventTime} | ${eventLocation}</p>
                         ${event.description ? `<p class="event-description">${event.description}</p>` : ''}
-                        ${event.googleCalendarLink ? `
-                            <a class="add-to-calendar" href="${event.googleCalendarLink}" target="_blank">
-                                <i class="fas fa-calendar-plus"></i> Add to Google Calendar
-                            </a>
-                        ` : ''}
+                        <a class="add-to-calendar" href="${googleCalendarLink}" target="_blank">
+                            <i class="fas fa-calendar-plus"></i> Add to Google Calendar
+                        </a>
                     </div>
                 </div>
             `;
@@ -184,6 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!username || !password) {
                 if (loginMessage) {
                     loginMessage.textContent = 'Please enter both username and password.';
+                    loginMessage.style.color = 'red';
                 }
                 return;
             }
