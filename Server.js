@@ -11,7 +11,26 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../frontend')));
+
+// ✅ FIXED: Serve static files from Frontend folder (correct path)
+app.use(express.static(path.join(__dirname, 'Frontend')));
+
+// ✅ Add specific routes for HTML files
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Frontend', 'Home.html'));
+});
+
+app.get('/Home.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Frontend', 'Home.html'));
+});
+
+app.get('/admin_dashboard.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Frontend', 'admin_dashboard.html'));
+});
+
+app.get('/TimeTable.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Frontend', 'TimeTable.html'));
+});
 
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/soe_board';
