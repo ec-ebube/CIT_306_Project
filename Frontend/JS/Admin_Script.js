@@ -3,6 +3,10 @@
    ========================= */
 
 const API_BASE_URL = 'http://localhost:3000';
+// // Or keep it dynamic:
+// const API_BASE_URL = process.env.NODE_ENV === 'production'
+//     ? window.location.origin
+//     : 'http://localhost:3000';
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log('Admin Dashboard - Initializing...');
@@ -23,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
                 e.preventDefault();
-                target.scrollIntoView({ 
+                target.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
                 });
@@ -80,11 +84,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
                     },
-                    body: JSON.stringify({ 
-                        title, 
-                        content, 
-                        author, 
-                        category: 'general' 
+                    body: JSON.stringify({
+                        title,
+                        content,
+                        author,
+                        category: 'general'
                     })
                 });
 
@@ -139,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
                     },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         title,
                         description,
                         date: new Date(date),

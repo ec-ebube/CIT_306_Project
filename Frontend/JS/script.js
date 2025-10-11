@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // =========================
     async function loadAnnouncements() {
         try {
-            const response = await fetch('http://localhost:3000/api/announcements');
+            const response = await fetch('/api/announcements');
             const announcements = await response.json();
             
             if (response.ok) {
