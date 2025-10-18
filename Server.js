@@ -38,8 +38,8 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/soe_bo
 console.log('🔗 Attempting to connect to MongoDB...');
 
 mongoose.connect(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
     serverSelectionTimeoutMS: 5000,
 })
     .then(() => {
@@ -123,52 +123,88 @@ app.get('/api/test', (req, res) => {
 });
 
 // Admin Login
+// app.post('/api/admin/login', async (req, res) => {
+//     try {
+//         const { username, password } = req.body;
+//         console.log('Login attempt for:', username);
+
+//         if (isMongoConnected()) {
+//             // Use MongoDB
+//             const admin = await Admin.findOne({ username });
+//             if (!admin) {
+//                 return res.status(401).json({ message: 'Invalid credentials' });
+//             }
+
+//             // Check password (plain text for demo)
+//             if (admin.password !== password) {
+//                 return res.status(401).json({ message: 'Invalid credentials' });
+//             }
+
+//             const token = jwt.sign(
+//                 { id: admin._id, username: admin.username },
+//                 process.env.JWT_SECRET || 'your-secret-key',
+//                 { expiresIn: '24h' }
+//             );
+
+//             res.json({
+//                 message: 'Login successful',
+//                 token,
+//                 admin: { id: admin._id, username: admin.username }
+//             });
+//         } else {
+//             // Use fallback
+//             if (username === fallbackAdmin.username && password === fallbackAdmin.password) {
+//                 const token = jwt.sign(
+//                     { username: fallbackAdmin.username },
+//                     process.env.JWT_SECRET || 'your-secret-key',
+//                     { expiresIn: '24h' }
+//                 );
+
+//                 res.json({
+//                     message: 'Login successful (In-Memory)',
+//                     token,
+//                     admin: { username: fallbackAdmin.username }
+//                 });
+//             } else {
+//                 res.status(401).json({ message: 'Invalid credentials' });
+//             }
+//         }
+//     } catch (error) {
+//         console.error('Login error:', error);
+//         res.status(500).json({ message: 'Server error', error: error.message });
+//     }
+// });
+// Admin Login
 app.post('/api/admin/login', async (req, res) => {
     try {
         const { username, password } = req.body;
         console.log('Login attempt for:', username);
 
-        if (isMongoConnected()) {
-            // Use MongoDB
-            const admin = await Admin.findOne({ username });
-            if (!admin) {
-                return res.status(401).json({ message: 'Invalid credentials' });
-            }
-
-            // Check password (plain text for demo)
-            if (admin.password !== password) {
-                return res.status(401).json({ message: 'Invalid credentials' });
-            }
-
-            const token = jwt.sign(
-                { id: admin._id, username: admin.username },
-                process.env.JWT_SECRET || 'your-secret-key',
-                { expiresIn: '24h' }
-            );
-
-            res.json({
-                message: 'Login successful',
-                token,
-                admin: { id: admin._id, username: admin.username }
-            });
-        } else {
-            // Use fallback
-            if (username === fallbackAdmin.username && password === fallbackAdmin.password) {
-                const token = jwt.sign(
-                    { username: fallbackAdmin.username },
-                    process.env.JWT_SECRET || 'your-secret-key',
-                    { expiresIn: '24h' }
-                );
-
-                res.json({
-                    message: 'Login successful (In-Memory)',
-                    token,
-                    admin: { username: fallbackAdmin.username }
-                });
-            } else {
-                res.status(401).json({ message: 'Invalid credentials' });
-            }
+        // Only use MongoDB - no fallback
+        const admin = await Admin.findOne({ username });
+        if (!admin) {
+            console.log('Admin not found:', username);
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
+
+        // Check password (plain text for now - we'll hash later)
+        if (admin.password !== password) {
+            console.log('Password mismatch for:', username);
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        const token = jwt.sign(
+            { id: admin._id, username: admin.username },
+            process.env.JWT_SECRET || 'your-secret-key',
+            { expiresIn: '24h' }
+        );
+
+        res.json({
+            message: 'Login successful',
+            token,
+            admin: { id: admin._id, username: admin.username }
+        });
+
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
