@@ -5,9 +5,11 @@
   "main": "Server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-     "start": "node Server.js"
+    "start": "node Server.js",
+    "init-admin": "node scripts/initAdmin.js",
+    "build": "npm run init-admin"
   },
-   "dependencies": {
+  "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
