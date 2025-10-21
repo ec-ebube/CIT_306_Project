@@ -257,7 +257,7 @@ app.post('/api/announcements', authenticateToken, async (req, res) => {
                 date: new Date()
             };
 
-            fallbackAnnouncements.unshift(announcement);
+            fallbackAnnouncements.push(announcement);
             res.status(201).json({ message: 'Announcement created successfully', announcement });
         }
     } catch (error) {
